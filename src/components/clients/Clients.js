@@ -1,50 +1,31 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { firestoreConnect } from "react-redux-firebase";
+import Spinner from "../layout/Spinner";
 
 class Clients extends Component {
+  state = {
+    totalOwed: null
+  };
+
+  static getDerivedStateFromProps(props, state) {
+    const { clients } = props;
+    if (clients) {
+      const total = clients.reduce((total, client) => {
+        return total + parseFloat(client.balance.toString());
+      }, 0);
+
+      return { totalOwed: total };
+    }
+    return null;
+  }
+
   render() {
-    const clients = [
-      {
-        id: "1231",
-        firstName: "Kevin",
-        lastName: "Malone",
-        email: "kevin@dundermiflin.com",
-        phone: "555-555-5555",
-        balance: "30.25"
-      },
-      {
-        id: "4131",
-        firstName: "Dave",
-        lastName: "Dale",
-        email: "dave@dale.com",
-        phone: "131-411-5325",
-        balance: "5325.53"
-      },
-      {
-        id: "1341",
-        firstName: "Steve",
-        lastName: "Austin",
-        email: "steve@austin.com",
-        phone: "232-553-5324",
-        balance: "5123.98"
-      },
-      {
-        id: "111",
-        firstName: "Billy",
-        lastName: "Gunn",
-        email: "billy@gunn.com",
-        phone: "111-111-1111",
-        balance: "1312.50"
-      },
-      {
-        id: "1",
-        firstName: "The",
-        lastName: "Rock",
-        email: "the@rock.com",
-        phone: "555-222-2455",
-        balance: "15123"
-      }
-    ];
+    const { clients } = this.props;
+    const { totalOwed } = this.state;
 
     if (clients) {
       return (
@@ -57,7 +38,12 @@ class Clients extends Component {
               </h2>
             </div>
             <div className="col-md-6">
-              <h1>total</h1>
+              <h5 className="text-right text-secondary">
+                Total Owed{" "}
+                <span className="text-primary">
+                  ${parseFloat(totalOwed).toFixed(2)}
+                </span>
+              </h5>
             </div>
           </div>
           <table className="table table-striped">
@@ -93,9 +79,19 @@ class Clients extends Component {
         </div>
       );
     } else {
-      return <h1>Loading</h1>;
+      return <Spinner />;
     }
   }
 }
 
-export default Clients;
+Clients.propTypes = {
+  firestore: PropTypes.object.isRequired,
+  clients: PropTypes.array
+};
+
+export default compose(
+  firestoreConnect([{ collection: "clients" }]),
+  connect((state, props) => ({
+    clients: state.firestore.ordered.clients
+  }))
+)(Clients);
