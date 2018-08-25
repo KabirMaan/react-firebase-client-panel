@@ -26,10 +26,14 @@ class AppNavbar extends Component {
                 </Link>
               </li>
               <li className="nav-item">
-                <Link to="/">About</Link>
+                <Link to="/" className="nav-link">
+                  About
+                </Link>
               </li>
               <li className="nav-item">
-                <Link to="/">Settings</Link>
+                <Link to="/" className="nav-link">
+                  Settings
+                </Link>
               </li>
             </ul>
           </div>
