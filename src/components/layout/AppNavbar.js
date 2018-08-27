@@ -48,21 +48,17 @@ class AppNavbar extends Component {
             <span className="navbar-toggler-icon" />
           </button>
           <div className="collapse navbar-collapse" id="navbarMain">
-            <ul className="navbar-nav ml-auto">
-              {isAuthenticated ? (
-                <li className="nav-item">
-                  <Link to="/" className="nav-link">
-                    Dashboard
-                  </Link>
-                </li>
-              ) : null}
-            </ul>
             {isAuthenticated ? (
               <ul className="navbar-nav ml-auto">
                 <li className="nav-item">
                   <a href="#!" className="nav-link">
-                    {auth.email}
+                    <i className="fas fa-user" /> {auth.email}
                   </a>
+                </li>
+                <li className="nav-item">
+                  <Link to="/" className="nav-link">
+                    Dashboard
+                  </Link>
                 </li>
                 <li className="nav-item">
                   <Link to="/settings" className="nav-link">
